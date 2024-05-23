@@ -1,0 +1,60 @@
+body {
+    background-color: #f8f9fa;
+    padding-top: 60px;
+}
+
+.navbar {
+    background-color: #343a40;
+}
+
+.navbar-brand {
+    color: white;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+h1 {
+    margin-bottom: 40px;
+    color: #343a40;
+}
+
+button.btn-primary {
+    margin-top: 20px;
+    background-color: #000000;
+    border-color: #007bff;
+}
+
+button.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.modal-content {
+    background-color: #fff;
+}
+
+.modal-title {
+    color: #343a40;
+}
+
+.modal-footer button.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.modal-footer button.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
