@@ -47,3 +47,7 @@ def atualizar_produto(request, codigo):
     else:
         form = ProdutoForm(instance=produto)
     return render(request, 'produtos/consultar_produto.html', {'form': form, 'produto': produto})
+
+def listar_produtos(request):
+    produtos = Produto.objects.all()
+    return render(request, 'produtos/listar_produtos.html', {'produtos': produtos})

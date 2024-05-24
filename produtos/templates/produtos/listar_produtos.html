@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Produtos</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+</head>
+<body class="bg-gradient-to-b from-blue-400 to-blue-600">
+    <nav class="bg-gray-900 text-white">
+        <div class="container mx-auto py-4">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'bootstrap/css/logo-perto.png' %}" alt="Logo" width="60" height="34" class="inline-block align-text-top">
+                Cotações
+            </a>
+        </div>
+    </nav>
+    <div class="container mx-auto py-10">
+        <h1 class="text-3xl font-bold mb-8 text-white">Lista de Produtos</h1>
+        <div class="bg-white bg-opacity-75 p-8 rounded-lg shadow-lg">
+            <table class="min-w-full bg-white">
+                <thead>
+                    <tr>
+                        <th class="py-2">Código</th>
+                        <th class="py-2">Nome</th>
+                        <th class="py-2">Valor</th>
+                        <th class="py-2">Última Atualização</th>
+                    </tr>
+                </thead>
+                <<tbody class="divide-y divide-cyan-600 text-center">
+                    {% for produto in produtos %}
+                    <tr class="hover:bg-gray-200 cursor-pointer" onclick="openModal('{{ produto.codigo }}')">
+                        <td class="py-2 p-16 text-justify">{{ produto.codigo }}</td>
+                        <td class="py-2">{{ produto.nome }}</td>
+                        <td class="py-2">{{ produto.valor }}</td>
+                        <td class="py-2">{{ produto.data_ultima_atualizacao }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="produtoModal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75 hidden">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+                <div class="bg-white p-4">
+                    <h2 class="text-xl font-bold mb-4">Detalhes do Produto</h2>
+                    <div id="modalContent">
+                        <!-- O conteúdo será carregado via AJAX -->
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded" onclick="closeModal()">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(codigo) {
+            $.ajax({
+                url: "{% url 'consultar_produto' %}?codigo=" + codigo,
+                success: function(data) {
+                    $('#modalContent').html(data); // Atualizado para usar o HTML diretamente
+                    $('#produtoModal').removeClass('hidden');
+                }
+            });
+        }
+    
+        function closeModal() {
+            $('#produtoModal').addClass('hidden');
+        }
+    </script>
+    
+</body>
+</html>

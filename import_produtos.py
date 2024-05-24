@@ -5,7 +5,7 @@ from decimal import Decimal
 from datetime import datetime
 
 # Configura as configurações do Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'seu_projeto.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'perto.settings')
 django.setup()
 
 from produtos.models import Produto
@@ -18,12 +18,8 @@ def importar_produtos():
     with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            # Converte o valor para Decimal e remove o prefixo 'R$' se existir
-            valor_str = row['valor'].replace("R$", "").strip()
-            valor = Decimal(valor_str.replace(",", "."))
-            
-            # Cria ou atualiza o produto no banco de dados
-            produto, created = Produto.objects.update_or_create(
+            valor = Decimal(row['valor'].replace("R$", "").replace(",", "."))
+            produto, created = Produto.objects.get_or_create(
                 codigo=row['codigo'],
                 defaults={
                     'nome': row['nome'],
@@ -35,7 +31,7 @@ def importar_produtos():
             if created:
                 print(f'Produto {produto.nome} criado com sucesso.')
             else:
-                print(f'Produto {produto.nome} atualizado com sucesso.')
+                print(f'Produto {produto.nome} já existe.')
 
 # Executa a função de importação
 if __name__ == '__main__':
