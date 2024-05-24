@@ -12,8 +12,7 @@ class ProdutoForm(forms.ModelForm):
             "descricao_longa",
             "valor",
             "cotacao_efetivada",
-            "valor_efetivacao",
-            "data_efetivacao",
+            
         ]
         widgets = {
             "codigo": forms.TextInput(
@@ -37,8 +36,7 @@ class ProdutoForm(forms.ModelForm):
                     "class": "form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none"
                 }
             ),
-            "data_efetivacao": forms.DateInput(attrs={"type": "date","class": "form-input border border-gray-300 rounded-md focus:outline-none"}),
-            "valor_efetivacao": forms.TextInput(attrs={"class": "form-input border border-gray-300 rounded-md focus:outline-none"}),
+           
         }
 
     def clean_valor(self):
