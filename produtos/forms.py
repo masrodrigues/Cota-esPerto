@@ -8,6 +8,7 @@ class ProdutoForm(forms.ModelForm):
         model = Produto
         fields = [
             "codigo",
+            "codigo_fusofix",
             "nome",
             "descricao_longa",
             "valor",
@@ -16,6 +17,11 @@ class ProdutoForm(forms.ModelForm):
         ]
         widgets = {
             "codigo": forms.TextInput(
+                attrs={
+                    "class": "form-input w-full p-2 font-bold border border-gray-300 rounded-md focus:outline-none"
+                }
+            ),
+            "codigo_fusofix": forms.TextInput(
                 attrs={
                     "class": "form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none"
                 }

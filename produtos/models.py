@@ -2,6 +2,7 @@ from django.db import models
 
 class Produto(models.Model):
     codigo = models.CharField(max_length=20, unique=True)
+    codigo_fusofix = models.CharField(max_length=20, unique=True)
     nome = models.CharField(max_length=100)
     descricao_longa = models.TextField()
     valor = models.DecimalField(max_digits=10, decimal_places=4)

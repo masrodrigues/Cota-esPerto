@@ -3,6 +3,7 @@ from .models import Produto
 from .forms import ProdutoForm
 from django.urls import reverse
 
+
 def cadastrar_produto(request):
     codigo = request.GET.get('codigo', '')
     if request.method == 'POST':
