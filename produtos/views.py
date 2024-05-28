@@ -35,19 +35,36 @@ def consultar_produto(request):
         'produto_nao_encontrado': produto_nao_encontrado,
         'message': message
     })
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from .models import Produto
+from .forms import ProdutoForm
 
 def atualizar_produto(request, codigo):
     produto = get_object_or_404(Produto, codigo=codigo)
     if request.method == 'POST':
         form = ProdutoForm(request.POST, instance=produto)
         if form.is_valid():
-            form.save()
+            # Processar campo de data de efetivação manualmente
+            cotacao_efetivada = 'cotacao_efetivada' in request.POST
+            data_efetivacao = request.POST.get('data_efetivacao')
+
+            # Salvar o formulário
+            produto = form.save(commit=False)
+            produto.cotacao_efetivada = cotacao_efetivada
+            if cotacao_efetivada and data_efetivacao:
+                produto.data_efetivacao = data_efetivacao
+            else:
+                produto.data_efetivacao = None
+            produto.save()
+
             return redirect(f"{reverse('consultar_produto')}?message=Produto atualizado com sucesso!")
         else:
             return redirect(f"{reverse('consultar_produto')}?codigo={codigo}&error=Erro ao atualizar produto. Por favor, tente novamente.")
     else:
         form = ProdutoForm(instance=produto)
     return render(request, 'produtos/consultar_produto.html', {'form': form, 'produto': produto})
+
 
 def listar_produtos(request):
     produtos = Produto.objects.all()

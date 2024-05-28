@@ -52,7 +52,7 @@
                 {% csrf_token %}
                 <div class="mb-4">
                     <label for="codigo" class="block text-gray-700">Código</label>
-                    <input type="text" id="codigo" name="codigo" class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required oninput="formatarCodigo(this)">
+                    <input type="text" id="codigo" name="codigo" class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ request.GET.codigo }}" required oninput="formatarCodigo(this)">
                     {% if form.codigo.errors %}
                         <div class="text-red-500 mt-2">
                             {{ form.codigo.errors }}

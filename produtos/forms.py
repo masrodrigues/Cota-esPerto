@@ -7,25 +7,15 @@ class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
         fields = [
-            "codigo",
-            "codigo_fusofix",
+           
             "nome",
             "descricao_longa",
             "valor",
-            "cotacao_efetivada",
+           'cotacao_efetivada', 'data_efetivacao'
             
         ]
         widgets = {
-            "codigo": forms.TextInput(
-                attrs={
-                    "class": "form-input w-full p-2 font-bold border border-gray-300 rounded-md focus:outline-none"
-                }
-            ),
-            "codigo_fusofix": forms.TextInput(
-                attrs={
-                    "class": "form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none"
-                }
-            ),
+            
             "nome": forms.TextInput(
                 attrs={
                     "class": "form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none"
@@ -34,17 +24,17 @@ class ProdutoForm(forms.ModelForm):
             "descricao_longa": forms.Textarea(
                 attrs={
                     "class": "form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none",
-                    "style": "height: 150px;",  # Ajuste o valor conforme necessário
+                    "style": "height: 130px;",  # Ajuste o valor conforme necessário
                 }
             ),
             "valor": forms.TextInput(
                 attrs={
-                    "class": "form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+                    "class": "form-input bg-yellow-200 w-full p-2 font-bold text-lg border border-gray-300 rounded-md focus:outline-none"
                 }
             ),
            
         }
-
+                        
     def clean_valor(self):
         valor = self.cleaned_data["valor"]
         # Converte o valor para string antes de verificar a vírgula
