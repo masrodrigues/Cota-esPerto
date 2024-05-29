@@ -25,7 +25,8 @@ def importar_produtos():
                     'nome': row['nome'],
                     'descricao_longa': row['descricao_longa'],
                     'valor': valor,
-                    'data_ultima_atualizacao': datetime.now()
+                    'data_ultima_atualizacao': datetime.now(),
+                    'codigo_fusofix': row.get('codigo_fusofix')
                 }
             )
             if created:

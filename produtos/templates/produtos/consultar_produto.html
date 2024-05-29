@@ -4,8 +4,9 @@
 <html>
 
 <head>
-    <title>Consultar Produto</title>
+    <title>Perto Consultar</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         #successMessage {
             transition: opacity 1s ease-in-out;
@@ -63,6 +64,7 @@
                     </div>
                     {% endif %}
                 </div>
+                
                 <button type="submit"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded custom-bounce">Consultar</button>
                 <a href="{% url 'cadastrar_produto' %}"
@@ -76,136 +78,90 @@
             </div>
             {% endif %}
             {% if produto %}
-          
-            <div id="produtoModal"
-                class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-40">
-                <div class="bg-gradient-to-r from-blue-200 to-blue-400 p-8 rounded-lg shadow-lg"
-                    style="max-width: 600px; width: 100%;">
-                    <div class="bg-cyan-500 shadow-2xl shadow-blue-500/80 rounded-lg p-2">
-                        <h2 class="text-2xl font-bold mb-2 highlight">{{ produto.nome }}</h2>
-                        
-                        <div class="flex space-x-4 mt-4">
-                            <p><strong>Valor:</strong> R$ {{ produto.valor }}</p>
-                            
-                        </div>
-                        <p class="mt-4"><strong>Última Atualização:</strong> {{ produto.data_ultima_atualizacao }}</p>
-                    </div>
-                    <form method="post" action="{% url 'atualizar_produto' produto.codigo %}" class="space-y-4 mt-4">
-                        {% csrf_token %}
-                        <div class="flex space-x-4">
-                            <div class="w-1/2">
-                                <label for="codigo" class="block font-bold ">Código</label>
-                                <input type="text" id="codigo" name="codigo"
-                                    class="form-input bg-yellow-200 font-bold w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    value="{{ produto.codigo }}" required oninput="formatarCodigo(this)">
-                            </div>
-                            <div class="w-1/2">
-                                <label for="codigo_fusofix" class="block font-bold ">Código Fusofix</label>
-                                <input type="text" id="codigo_fusofix" name="codigo_fusofix"
-                                    class="form-input font-bold w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    value="{{ produto.codigo_fusofix }}">
-                            </div>
-                        </div>
-                        {{ form.as_p }}
-                        {% if form.non_field_errors %}
-                        <div class="text-red-500 mt-2">
-                            {{ form.non_field_errors }}
-                        </div>
-                        {% endif %}
-                        <div class="flex space-x-4 mt-4">
-                            <div class="w-1/2">
-                                <label for="cento" class="block font-bold ">Cento</label>
-                                <input type="text" id="cento" name="cento"
-                                    class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    value="{{ produto.valor|multiply:100|floatformat:2}}" readonly>
-                            </div>
-                            <div class="w-1/2">
-                                <label for="milheiro" class="block font-bold ">Milheiro</label>
-                                <input type="text" id="milheiro" name="milheiro"
-                                    class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    value="{{ produto.valor|multiply:1000|floatformat:2 }}" readonly>
-                            </div>
-                        </div>
-                        <div class="flex space-x-4 mt-4 items-center">
-                            <div class="w-1/2">
-                                <label for="cotacao_efetivada" class="block font-bold">Cotação efetivada:</label>
-                                <input type="checkbox" id="cotacao_efetivada" name="cotacao_efetivada" 
-                                       class="form-checkbox h-5 w-5 text-blue-600" 
-                                       {% if produto.cotacao_efetivada %}checked{% endif %} 
-                                       onchange="toggleDataInput()">
-                            </div>
-                            <div class="w-1/2" id="dataEfetivacaoContainer" {% if not produto.cotacao_efetivada %}style="display:none;"{% endif %}>
-                                <label for="data_efetivacao" class="block font-bold">Data Efetivação</label>
-                                <input type="date" id="data_efetivacao" name="data_efetivacao" 
-                                       class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                       value="{{ produto.data_efetivacao|date:'Y-m-d' }}">
-                            </div>
-                        </div>
-                        
-                        <script>
-                            function toggleDataInput() {
-                                var checkBox = document.getElementById('cotacao_efetivada');
-                                var dataInputContainer = document.getElementById('dataEfetivacaoContainer');
-                                if (checkBox.checked) {
-                                    dataInputContainer.style.display = 'block';
-                                } else {
-                                    dataInputContainer.style.display = 'none';
-                                }
-                            }
-                        </script>
-                        
-                        <div class="flex justify-center space-x-4">
-                            <button type="submit"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Atualizar</button>
-                            <button type="button"
-                                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                                onclick="fecharModal()">Fechar</button>
-                        </div>
-                    </form>
+<div id="produtoModal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-40">
+    <div class="bg-gradient-to-r from-blue-200 to-blue-400 p-8 rounded-lg shadow-lg" style="max-width: 600px; width: 100%;">
+        <div class="bg-cyan-500 shadow-2xl shadow-blue-500/80 rounded-lg p-2">
+            <h2 class="text-2xl font-bold mb-2 highlight">{{ produto.nome }}</h2>
+            <div class="flex space-x-4 mt-4">
+                <p><strong>Valor:</strong> R$ {{ produto.valor }}</p>
+            </div>
+            <p class="mt-4"><strong>Última Atualização:</strong> {{ produto.data_ultima_atualizacao }}</p>
+        </div>
+        <form method="post" action="{% url 'atualizar_produto' produto.codigo %}" class="space-y-4 mt-4">
+            {% csrf_token %}
+            <div class="flex space-x-4">
+                <div class="w-1/2">
+                    <label for="codigo" class="block font-bold">Código</label>
+                    <input type="text" id="codigo" name="codigo"
+                           class="form-input bg-yellow-200 font-bold w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           value="{{ produto.codigo }}" required oninput="formatarCodigo(this)">
+                </div>
+                <div class="w-1/2">
+                    <label for="codigo_fusofix" class="block font-bold">Código Fusofix</label>
+                    <input type="text" id="codigo_fusofix" name="codigo_fusofix"
+                           class="form-input font-bold w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           value="{{ produto.codigo_fusofix }}">
                 </div>
             </div>
-            <script>
-                function abrirModal() {
-                    document.getElementById('produtoModal').classList.remove('hidden');
-                }
-
-                function fecharModal() {
-                    document.getElementById('produtoModal').classList.add('hidden');
-                }
-
-                function toggleDataInput() {
-                    const dataInput = document.getElementById('data_cotacao');
-                    const cotacaoCheckbox = document.getElementById('cotacao');
-                    if (cotacaoCheckbox.checked) {
-                        dataInput.style.display = 'block';
-                    } else {
-                        dataInput.style.display = 'none';
-                    }
-                }
-
-                abrirModal(); // Abre o modal quando o produto é encontrado
-            </script>
-            {% elif produto_nao_encontrado %}
-            <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
-                <div class="bg-white p-8 rounded-lg shadow-lg">
-                    <h2 class="text-lg font-bold mb-4">Produto Não Encontrado</h2>
-                    <p>Produto com o código "{{ codigo }}" não encontrado.</p>
-                    <a href="{% url 'cadastrar_produto' %}?codigo={{ codigo }}"
-                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Cadastrar novo
-                        produto</a>
-                    <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
-                        onclick="fecharModal()">Fechar</button>
-                </div>
+            {{ form.as_p }}
+            {% if form.non_field_errors %}
+            <div class="text-red-500 mt-2">
+                {{ form.non_field_errors }}
             </div>
-            <script>
-                function fecharModal() {
-                    document.querySelector('.fixed').style.display = 'none';
-                }
-            </script>
             {% endif %}
+            <div class="flex space-x-4 mt-4">
+                <div class="w-1/2">
+                    <label for="cento" class="block font-bold">Cento</label>
+                    <input type="text" id="cento" name="cento"
+                           class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           value="{{ produto.valor|multiply:100|floatformat:2 }}" readonly>
+                </div>
+                <div class="w-1/2">
+                    <label for="milheiro" class="block font-bold">Milheiro</label>
+                    <input type="text" id="milheiro" name="milheiro"
+                           class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           value="{{ produto.valor|multiply:1000|floatformat:2 }}" readonly>
+                </div>
+            </div>
+            <div class="flex justify-center space-x-4 mt-4">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <i class="fas fa-save"></i> Atualizar
+                </button>
+                <button type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" onclick="fecharModal()">
+                    <i class="fas fa-times"></i> Fechar
+                </button>
+                <button type="submit" name="delete" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    <i class="fas fa-trash-alt"></i> Excluir
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function abrirModal() {
+        document.getElementById('produtoModal').classList.remove('hidden');
+    }
+
+    function fecharModal() {
+        document.getElementById('produtoModal').classList.add('hidden');
+    }
+
+    abrirModal(); // Abre o modal quando o produto é encontrado
+</script>
+{% elif produto_nao_encontrado %}
+<div class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
+    <div class="bg-gradient-to-r from-blue-200 to-blue-400 p-8 rounded-lg shadow-lg">
+        <h2 class="text-lg font-bold mb-4 text-gray-900">Produto Não Encontrado</h2>
+        <p class="text-gray-800 mb-4">Produto com o código "{{ codigo }}" não encontrado.</p>
+        <a href="{% url 'cadastrar_produto' %}?codigo={{ codigo }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Cadastrar novo produto</a>
+        <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4" onclick="window.history.back()">Voltar à pesquisa</button>
+    </div>
+</div>
+{% endif %}
+
+           
         </div>
     </div>
-
     <script>
         function formatarCodigo(input) {
             let value = input.value;

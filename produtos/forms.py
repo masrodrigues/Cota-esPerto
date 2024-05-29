@@ -10,8 +10,8 @@ class ProdutoForm(forms.ModelForm):
            
             "nome",
             "descricao_longa",
-            "valor",
-           'cotacao_efetivada', 'data_efetivacao'
+            "valor"
+          
             
         ]
         widgets = {
@@ -29,7 +29,8 @@ class ProdutoForm(forms.ModelForm):
             ),
             "valor": forms.TextInput(
                 attrs={
-                    "class": "form-input bg-yellow-200 w-full p-2 font-bold text-lg border border-gray-300 rounded-md focus:outline-none"
+                    "class": "form-input bg-yellow-200 w-full p-2 font-bold text-lg border border-gray-300 rounded-md focus:outline-none",
+                    "style":"font-bold;", 
                 }
             ),
            
