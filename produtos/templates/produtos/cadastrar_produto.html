@@ -1,10 +1,12 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Cadastrar Produto</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-gradient-to-b from-blue-400 to-blue-600 min-h-screen flex flex-col shadow-lg">
     <nav class="bg-gray-900 text-white">
         <div class="container mx-auto py-4 flex items-center justify-between">
@@ -48,11 +50,23 @@
             </div>
             {% endif %}
 
+            {% comment %} FORMULARIO DE CADASTRO {% endcomment %}
             <form method="post" class="bg-gradient-to-r from-blue-200 to-blue-400 p-4 rounded-xl space-y-4">
                 {% csrf_token %}
-                <div class="mb-4">
-                    <label for="codigo" class="block text-gray-700">Código</label>
-                    <input type="text" id="codigo" name="codigo" class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ request.GET.codigo }}" required oninput="formatarCodigo(this)">
+                <div class="flex space-x-4">
+                    <div class="w-1/2">
+                        <label for="id_codigo" class="block font-bold">Código</label>
+                        <input type="text" id="codigo" name="codigo"
+                           class="form-input bg-yellow-200 font-bold w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           value="{{ request.GET.codigo }}" required oninput="formatarCodigo(this)">
+                        {% comment %} {{ form.codigo }} {% endcomment %}
+                    </div>
+                    <div class="w-1/2">
+                        <label for="codigo_fusofix" class="block font-bold">Código Fusofix</label>
+                        <input type="text" id="codigo_fusofix" name="codigo_fusofix"
+                               class="form-input font-bold w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               value="{{ produto.codigo_fusofix }}">
+                    </div>
                     {% if form.codigo.errors %}
                         <div class="text-red-500 mt-2">
                             {{ form.codigo.errors }}
@@ -77,6 +91,7 @@
                     <a href="{% url 'consultar_produto' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Voltar à pesquisa</a>
                 </div>
             </form>
+            
         </div>
     </div>
     <script>
@@ -108,4 +123,5 @@
         });
     </script>
 </body>
+
 </html>

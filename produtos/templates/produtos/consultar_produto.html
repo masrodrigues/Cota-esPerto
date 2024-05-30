@@ -77,15 +77,25 @@
                 {{ message }}
             </div>
             {% endif %}
-            {% if produto %}
+            {% if form.non_field_errors %}
+            <div class="text-red-500 mt-2">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+<!-- Seu HTML existente aqui -->
+{% if produto %}
 <div id="produtoModal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-40">
     <div class="bg-gradient-to-r from-blue-200 to-blue-400 p-8 rounded-lg shadow-lg" style="max-width: 600px; width: 100%;">
         <div class="bg-cyan-500 shadow-2xl shadow-blue-500/80 rounded-lg p-2">
             <h2 class="text-2xl font-bold mb-2 highlight">{{ produto.nome }}</h2>
+            <p><strong>Código:</strong>{{ produto.codigo }}</p>
             <div class="flex space-x-4 mt-4">
                 <p><strong>Valor:</strong> R$ {{ produto.valor }}</p>
             </div>
             <p class="mt-4"><strong>Última Atualização:</strong> {{ produto.data_ultima_atualizacao }}</p>
+            {% if produto.data_efetivacao %}
+            <p class="mt-2"><strong>Data da Cotação:</strong> {{ produto.data_efetivacao }}</p>
+            {% endif %}
         </div>
         <form method="post" action="{% url 'atualizar_produto' produto.codigo %}" class="space-y-4 mt-4">
             {% csrf_token %}
@@ -103,12 +113,21 @@
                            value="{{ produto.codigo_fusofix }}">
                 </div>
             </div>
-            {{ form.as_p }}
-            {% if form.non_field_errors %}
-            <div class="text-red-500 mt-2">
-                {{ form.non_field_errors }}
-            </div>
-            {% endif %}
+
+            {% for field in form %}
+                {% if field.name != 'codigo' %}
+                    <div class="mb-4">
+                        <label for="{{ field.id_for_label }}" class="block text-gray-700">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-red-500 mt-2">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
             <div class="flex space-x-4 mt-4">
                 <div class="w-1/2">
                     <label for="cento" class="block font-bold">Cento</label>
@@ -123,6 +142,20 @@
                            value="{{ produto.valor|multiply:1000|floatformat:2 }}" readonly>
                 </div>
             </div>
+            <div class="flex space-x-4 mt-4">
+                <div class="w-1/2">
+                    <label for="cotacao_efetivada" class="block font-bold">Cotação Efetivada</label>
+                    <input type="checkbox" id="cotacao_efetivada" name="cotacao_efetivada"
+                           class="form-checkbox h-5 w-5 text-blue-600" {% if produto.cotacao_efetivada %}checked{% endif %} onclick="toggleDataEfetivacao()">
+                </div>
+                <div class="w-1/2">
+                    <label for="data_efetivacao" class="block font-bold">Data da Cotação</label>
+                    <input type="date" id="data_efetivacao" name="data_efetivacao"
+                           class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           value="{{ produto.data_efetivacao }}" {% if not produto.cotacao_efetivada %}disabled{% endif %}>
+                </div>
+            </div>
+            {{ form.non_field_errors }}
             <div class="flex justify-center space-x-4 mt-4">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     <i class="fas fa-save"></i> Atualizar
@@ -146,7 +179,25 @@
         document.getElementById('produtoModal').classList.add('hidden');
     }
 
-    abrirModal(); // Abre o modal quando o produto é encontrado
+    function formatarCodigo(input) {
+        input.value = input.value.replace(/\./g, '').replace(/(\d{3})(\d{2})(\d{3})(\d{1})/, '$1.$2.$3-$4');
+    }
+
+    function toggleDataEfetivacao() {
+        var checkbox = document.getElementById('cotacao_efetivada');
+        var dataEfetivacaoInput = document.getElementById('data_efetivacao');
+        if (checkbox.checked) {
+            dataEfetivacaoInput.removeAttribute('disabled');
+        } else {
+            dataEfetivacaoInput.setAttribute('disabled', 'disabled');
+            dataEfetivacaoInput.value = '';
+        }
+    }
+
+    // Execute toggleDataEfetivacao on page load to set the correct initial state
+    document.addEventListener('DOMContentLoaded', function () {
+        toggleDataEfetivacao();
+    });
 </script>
 {% elif produto_nao_encontrado %}
 <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
@@ -159,7 +210,6 @@
 </div>
 {% endif %}
 
-           
         </div>
     </div>
     <script>
@@ -169,8 +219,8 @@
             if (value.length > 3) {
                 value = value.substring(0, 3) + '.' + value.substring(3);
             }
-            if (value.length > 7) {
-                value = value.substring(0, 7) + '.' + value.substring(7);
+            if (value.length > 6) {
+                value = value.substring(0, 6) + '.' + value.substring(6);
             }
             if (value.length > 10) {
                 value = value.substring(0, 10) + '-' + value.substring(10);
