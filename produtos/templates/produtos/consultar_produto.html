@@ -50,10 +50,10 @@
     </nav>
     <div class="container mx-auto flex justify-center items-start h-screen pt-20">
         <div class="bg-white bg-opacity-75 p-8 rounded-lg shadow-lg" style="width: 700px;">
-            <h1 class="text-3xl font-bold mb-8">Consultar Produto</h1>
+            <h1 class="text-3xl text-center font-bold mb-8">Consultar Produto</h1>
             <form method="get" class="bg-gradient-to-r from-blue-200 to-blue-400 p-4 rounded-xl space-y-4">
                 <div class="mb-4">
-                    <label for="codigo" class="block font-bold text-gray-700">Código do Produto</label>
+                    <label for="codigo" class="block font-bold mb-4 text-gray-700">Código do Produto</label>
                     <input type="text" id="codigo" name="codigo" class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required oninput="formatarCodigo(this)">
                     {% if form.codigo.errors %}
                     <div id="errorMessage" class="bg-red-200 border border-red-600 text-red-800 p-4 rounded mt-2">
@@ -61,9 +61,11 @@
                     </div>
                     {% endif %}
                 </div>
+            <div class="flex justify-center mt-6" id="butons-container">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded custom-bounce">Consultar</button>
                 <a href="{% url 'cadastrar_produto' %}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4">Cadastro</a>
                 <a href="{% url 'listar_produtos' %}" class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded ml-4">Produtos</a>
+            </div>
             </form>
             {% if message %}
             <div id="successMessage" class="bg-green-200 border border-green-600 text-green-800 p-4 rounded mt-4">
@@ -170,7 +172,7 @@
             }
             input.value = value;
         }
-
+    
         function toggleDataEfetivacao() {
             var checkbox = document.getElementById('cotacao_efetivada');
             var dataEfetivacaoInput = document.getElementById('data_efetivacao');
@@ -183,33 +185,40 @@
                 dataEfetivacaoError.style.display = 'none';
             }
         }
-
+    
         function validarForm() {
             var checkbox = document.getElementById('cotacao_efetivada');
             var dataEfetivacaoInput = document.getElementById('data_efetivacao');
             var dataEfetivacaoError = document.getElementById('dataEfetivacaoError');
-
+    
             if (checkbox.checked && !dataEfetivacaoInput.value) {
                 dataEfetivacaoError.style.display = 'block';
+                setTimeout(function() {
+                    dataEfetivacaoError.classList.add('fade-out');
+                }, 5000); // Tempo para iniciar o desvanecimento (5 segundos)
+                setTimeout(function() {
+                    dataEfetivacaoError.style.display = 'none';
+                    dataEfetivacaoError.classList.remove('fade-out'); // Remover a classe para reutilizar o efeito na próxima vez
+                }, 6000); // Tempo para remover o elemento (6 segundos)
                 return false;
             }
             dataEfetivacaoError.style.display = 'none';
             return true;
         }
-
+    
         document.addEventListener('DOMContentLoaded', function () {
             toggleDataEfetivacao();
-
+    
             // Script para fechar o modal após atualização bem-sucedida
-            var success = '{{ success }}';
-            if (success) {
+            var success = '{{ request.GET.success|default_if_none:"false" }}';
+            if (success === 'true') {
                 fecharModal();
             }
-
+    
             // Desvanecer mensagens de sucesso e erro
             var successMessage = document.getElementById('successMessage');
             var errorMessage = document.getElementById('errorMessage');
-
+    
             if (successMessage) {
                 setTimeout(function() {
                     successMessage.classList.add('fade-out');
@@ -218,24 +227,26 @@
                     successMessage.style.display = 'none';
                 }, 6000); // Tempo para remover o elemento (6 segundos)
             }
-
+    
             if (errorMessage) {
                 setTimeout(function() {
                     errorMessage.classList.add('fade-out');
-                }, 5000); // Tempo para iniciar o desvanecimento (5 segundos)
+                }, 4000); // Tempo para iniciar o desvanecimento (3 segundos)
                 setTimeout(function() {
                     errorMessage.style.display = 'none';
-                }, 6000); // Tempo para remover o elemento (6 segundos)
+                }, 6000); // Tempo para remover o elemento (4 segundos)
             }
         });
-
+    
         function abrirModal() {
             document.getElementById('produtoModal').classList.remove('hidden');
         }
-
+    
         function fecharModal() {
             document.getElementById('produtoModal').classList.add('hidden');
         }
     </script>
+    
+    
 </body>
 </html>

@@ -37,11 +37,6 @@ def consultar_produto(request):
     })
 
 
-
-
-
-
-
 def atualizar_produto(request, codigo):
     produto = get_object_or_404(Produto, codigo=codigo)
 
@@ -59,13 +54,8 @@ def atualizar_produto(request, codigo):
                 else:
                     produto.data_efetivacao = None
                 produto.cotacao_efetivada = cotacao_efetivada
-
                 form.save()
-                return render(request, 'produtos/consultar_produto.html', {
-                    'form': form,
-                    'produto': produto,
-                    'success': True,  # Indica que a atualização foi bem-sucedida
-                })
+                return redirect(f"{reverse('consultar_produto')}?codigo={codigo}&message=Produto atualizado com sucesso!&success=true")
 
     else:
         form = ProdutoForm(instance=produto)
@@ -76,3 +66,5 @@ def atualizar_produto(request, codigo):
 def listar_produtos(request):
     produtos = Produto.objects.all()
     return render(request, 'produtos/listar_produtos.html', {'produtos': produtos})
+
+

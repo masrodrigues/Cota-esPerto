@@ -6,6 +6,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <style>
+        #successMessage, #errorMessage {
+            transition: opacity 1s ease-in-out;
+        }
+
+        .fade-out {
+            opacity: 0;
+        }
+
+        .custom-bounce {
+            animation: custom-bounce 1s infinite;
+        }
+
+        @keyframes custom-bounce {
+            0%,
+            100% {
+                transform: translateY(-5%);
+                animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+            }
+
+            50% {
+                transform: translateY(0);
+                animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+            }
+        }
+
+        .highlight {
+            color: blue;
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-b from-blue-400 to-blue-600 min-h-screen flex flex-col">
     <nav class="bg-gray-900 text-white">
@@ -60,6 +90,25 @@
                 success: function(data) {
                     $('#modalContent').html($(data).find('#produtoModal').html());
                     $('#produtoModal').removeClass('hidden');
+                    // Call functions to re-apply behaviors to dynamically loaded content
+                    toggleDataEfetivacao();
+                    setTimeout(function() {
+                        var successMessage = document.getElementById('successMessage');
+                        if (successMessage) {
+                            successMessage.classList.add('fade-out');
+                            setTimeout(function() {
+                                successMessage.style.display = 'none';
+                            }, 6000);
+                        }
+
+                        var errorMessage = document.getElementById('errorMessage');
+                        if (errorMessage) {
+                            errorMessage.classList.add('fade-out');
+                            setTimeout(function() {
+                                errorMessage.style.display = 'none';
+                            }, 6000);
+                        }
+                    }, 5000);
                 }
             });
         }
@@ -80,16 +129,37 @@
             var checkbox = document.getElementById('cotacao_efetivada');
             var dataEfetivacaoInput = document.getElementById('data_efetivacao');
             var dataEfetivacaoError = document.getElementById('dataEfetivacaoError');
-            if (checkbox.checked) {
-                dataEfetivacaoInput.removeAttribute('disabled');
-            } else {
-                dataEfetivacaoInput.setAttribute('disabled', 'disabled');
-                dataEfetivacaoInput.value = '';
-                dataEfetivacaoError.style.display = 'none';
+            if (checkbox && dataEfetivacaoInput && dataEfetivacaoError) {
+                if (checkbox.checked) {
+                    dataEfetivacaoInput.removeAttribute('disabled');
+                } else {
+                    dataEfetivacaoInput.setAttribute('disabled', 'disabled');
+                    dataEfetivacaoInput.value = '';
+                    dataEfetivacaoError.style.display = 'none';
+                }
             }
         }
 
-        // Execute toggleDataEfetivacao on page load to set the correct initial state
+        function validarForm() {
+            var checkbox = document.getElementById('cotacao_efetivada');
+            var dataEfetivacaoInput = document.getElementById('data_efetivacao');
+            var dataEfetivacaoError = document.getElementById('dataEfetivacaoError');
+    
+            if (checkbox.checked && !dataEfetivacaoInput.value) {
+                dataEfetivacaoError.style.display = 'block';
+                setTimeout(function() {
+                    dataEfetivacaoError.classList.add('fade-out');
+                }, 5000); // Tempo para iniciar o desvanecimento (5 segundos)
+                setTimeout(function() {
+                    dataEfetivacaoError.style.display = 'none';
+                    dataEfetivacaoError.classList.remove('fade-out'); // Remover a classe para reutilizar o efeito na próxima vez
+                }, 6000); // Tempo para remover o elemento (6 segundos)
+                return false;
+            }
+            dataEfetivacaoError.style.display = 'none';
+            return true;
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             toggleDataEfetivacao();
         });
