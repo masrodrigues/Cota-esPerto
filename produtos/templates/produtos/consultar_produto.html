@@ -146,9 +146,8 @@
                             <button type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" onclick="fecharModal()">
                                 <i class="fas fa-times"></i> Fechar
                             </button>
-                            <button type="submit" name="delete" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-trash-alt"></i> Excluir
-                            </button>
+                            <button type="button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-4" onclick="confirmarExclusao('{{ produto.codigo }}')"><i class="fas fa-trash-alt"></i> Excluir</button>
+                            
                         </div>
                     </form>
                 </div>
@@ -158,6 +157,20 @@
     </div>
 
     <script>
+        function confirmarExclusao(codigo) {
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{% url "excluir_produto" "__codigo__" %}'.replace('__codigo__', codigo);
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = 'csrfmiddlewaretoken';
+                csrfToken.value = '{{ csrf_token }}';
+                form.appendChild(csrfToken);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
         function formatarCodigo(input) {
             let value = input.value;
             value = value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos

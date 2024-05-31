@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Produto
 from .forms import ProdutoForm
 from django.urls import reverse
+from django.contrib import messages
 
 def cadastrar_produto(request):
     codigo = request.GET.get('codigo', '')
@@ -62,6 +63,11 @@ def atualizar_produto(request, codigo):
 
     return render(request, 'produtos/consultar_produto.html', {'form': form, 'produto': produto})
 
+def excluir_produto(request, codigo):
+    produto = get_object_or_404(Produto, codigo=codigo)
+    produto.delete()
+    messages.success(request, 'Produto excluído com sucesso.')
+    return redirect('consultar_produto')
 
 def listar_produtos(request):
     produtos = Produto.objects.all()
