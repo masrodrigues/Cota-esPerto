@@ -21,7 +21,7 @@
             <h1 class="text-3xl font-bold mb-8 text-center">Cadastrar Produto</h1>
 
             {% if message %}
-            <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md mb-4" role="alert">
+            <div id="success-message" class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md mb-4" role="alert">
                 <div class="flex">
                     <div class="py-1">
                         <svg class="fill-current h-6 w-6 text-teal-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -119,6 +119,14 @@
                 codigoInput.addEventListener('input', function () {
                     formatarCodigo(codigoInput);
                 });
+            }
+
+            // Ocultar mensagem de sucesso após 5 segundos
+            const successMessage = document.getElementById('success-message');
+            if (successMessage) {
+                setTimeout(function () {
+                    successMessage.style.display = 'none';
+                }, 5000);
             }
         });
     </script>

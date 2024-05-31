@@ -152,7 +152,17 @@
                     </form>
                 </div>
             </div>
+            {% elif produto_nao_encontrado %}
+            <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
+                <div class="bg-gradient-to-r from-blue-200 to-blue-400 p-8 rounded-lg shadow-lg">
+                    <h2 class="text-lg font-bold mb-4 text-gray-900">Produto Não Encontrado</h2>
+                    <p class="text-gray-800 mb-4">Produto com o código "{{ codigo }}" não encontrado.</p>
+                    <a href="{% url 'cadastrar_produto' %}?codigo={{ codigo }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Cadastrar novo produto</a>
+                    <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4" onclick="window.history.back()">Voltar à pesquisa</button>
+                </div>
+            </div>
             {% endif %}
+            
         </div>
     </div>
 

@@ -9,14 +9,19 @@ def cadastrar_produto(request):
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
         if form.is_valid():
-            form.save()
+            produto = form.save(commit=False)
+            # Garantir que o campo codigo_fusofix não seja salvo como None
+            if produto.codigo_fusofix is None:
+                produto.codigo_fusofix = ''
+            produto.save()
+            messages.success(request, 'Produto cadastrado com sucesso!')
             return redirect(f"{reverse('consultar_produto')}?message=Produto cadastrado com sucesso!")
+
         else:
             return render(request, 'produtos/cadastrar_produto.html', {'form': form, 'error': 'Erro ao cadastrar produto. Por favor, tente novamente.'})
     else:
         form = ProdutoForm(initial={'codigo': codigo})
     return render(request, 'produtos/cadastrar_produto.html', {'form': form})
-
 
 def consultar_produto(request):
     message = request.GET.get('message', None)
