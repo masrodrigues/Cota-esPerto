@@ -10,7 +10,6 @@ def cadastrar_produto(request):
         form = ProdutoForm(request.POST)
         if form.is_valid():
             produto = form.save(commit=False)
-            # Garantir que o campo codigo_fusofix não seja salvo como None
             if produto.codigo_fusofix is None:
                 produto.codigo_fusofix = ''
             produto.save()
@@ -41,7 +40,6 @@ def consultar_produto(request):
         'produto_nao_encontrado': produto_nao_encontrado,
         'message': message
     })
-
 
 def atualizar_produto(request, codigo):
     produto = get_object_or_404(Produto, codigo=codigo)
@@ -77,5 +75,3 @@ def excluir_produto(request, codigo):
 def listar_produtos(request):
     produtos = Produto.objects.all()
     return render(request, 'produtos/listar_produtos.html', {'produtos': produtos})
-
-
