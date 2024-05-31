@@ -37,6 +37,11 @@ def consultar_produto(request):
     })
 
 
+
+
+
+
+
 def atualizar_produto(request, codigo):
     produto = get_object_or_404(Produto, codigo=codigo)
 
@@ -45,10 +50,10 @@ def atualizar_produto(request, codigo):
         cotacao_efetivada = 'cotacao_efetivada' in request.POST
         data_efetivacao = request.POST.get('data_efetivacao', None)
 
-        if form.is_valid():
-            if cotacao_efetivada and not data_efetivacao:
-                form.add_error('data_efetivacao', 'Data da cotação é necessária quando a cotação é efetivada.')
-            else:
+        if cotacao_efetivada and not data_efetivacao:
+            form.add_error('data_efetivacao', 'Data da cotação é necessária quando a cotação é efetivada.')
+        else:
+            if form.is_valid():
                 if cotacao_efetivada:
                     produto.data_efetivacao = data_efetivacao
                 else:
@@ -56,11 +61,17 @@ def atualizar_produto(request, codigo):
                 produto.cotacao_efetivada = cotacao_efetivada
 
                 form.save()
-                return redirect(f"{reverse('consultar_produto')}?codigo={codigo}&message=Produto atualizado com sucesso!")
+                return render(request, 'produtos/consultar_produto.html', {
+                    'form': form,
+                    'produto': produto,
+                    'success': True,  # Indica que a atualização foi bem-sucedida
+                })
+
     else:
         form = ProdutoForm(instance=produto)
 
     return render(request, 'produtos/consultar_produto.html', {'form': form, 'produto': produto})
+
 
 def listar_produtos(request):
     produtos = Produto.objects.all()

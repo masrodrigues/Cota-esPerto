@@ -1,14 +1,14 @@
 {% load static %}
 {% load custom_filters %}
+
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>Perto Consultar</title>
+    <title>Consultar Produto</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        #successMessage {
+        #successMessage, #errorMessage {
             transition: opacity 1s ease-in-out;
         }
 
@@ -43,8 +43,7 @@
     <nav class="bg-gray-900 text-white">
         <div class="container mx-auto py-4">
             <a class="navbar-brand" href="#">
-                <img src="{% static 'bootstrap/css/logo-perto.png' %}" alt="Logo" width="60" height="34"
-                    class="inline-block align-text-top">
+                <img src="{% static 'bootstrap/css/logo-perto.png' %}" alt="Logo" width="60" height="34" class="inline-block align-text-top">
                 Cotações
             </a>
         </div>
@@ -55,22 +54,16 @@
             <form method="get" class="bg-gradient-to-r from-blue-200 to-blue-400 p-4 rounded-xl space-y-4">
                 <div class="mb-4">
                     <label for="codigo" class="block font-bold text-gray-700">Código do Produto</label>
-                    <input type="text" id="codigo" name="codigo"
-                        class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required oninput="formatarCodigo(this)">
+                    <input type="text" id="codigo" name="codigo" class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required oninput="formatarCodigo(this)">
                     {% if form.codigo.errors %}
-                    <div class="text-red-500 mt-2">
+                    <div id="errorMessage" class="bg-red-200 border border-red-600 text-red-800 p-4 rounded mt-2">
                         {{ form.codigo.errors }}
                     </div>
                     {% endif %}
                 </div>
-                
-                <button type="submit"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded custom-bounce">Consultar</button>
-                <a href="{% url 'cadastrar_produto' %}"
-                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4">Cadastro</a>
-                <a href="{% url 'listar_produtos' %}"
-                    class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded ml-4">Produtos</a>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded custom-bounce">Consultar</button>
+                <a href="{% url 'cadastrar_produto' %}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4">Cadastro</a>
+                <a href="{% url 'listar_produtos' %}" class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded ml-4">Produtos</a>
             </form>
             {% if message %}
             <div id="successMessage" class="bg-green-200 border border-green-600 text-green-800 p-4 rounded mt-4">
@@ -78,140 +71,90 @@
             </div>
             {% endif %}
             {% if form.non_field_errors %}
-            <div class="text-red-500 mt-2">
+            <div id="errorMessage" class="bg-red-200 border border-red-600 text-red-800 p-4 rounded mt-2">
                 {{ form.non_field_errors }}
             </div>
             {% endif %}
-<!-- Seu HTML existente aqui -->
-{% if produto %}
-<div id="produtoModal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-40">
-    <div class="bg-gradient-to-r from-blue-200 to-blue-400 p-8 rounded-lg shadow-lg" style="max-width: 600px; width: 100%;">
-        <div class="bg-cyan-500 shadow-2xl shadow-blue-500/80 rounded-lg p-2">
-            <h2 class="text-2xl font-bold mb-2 highlight">{{ produto.nome }}</h2>
-            <p><strong>Código:</strong>{{ produto.codigo }}</p>
-            <div class="flex space-x-4 mt-4">
-                <p><strong>Valor:</strong> R$ {{ produto.valor }}</p>
-            </div>
-            <p class="mt-4"><strong>Última Atualização:</strong> {{ produto.data_ultima_atualizacao }}</p>
-            {% if produto.data_efetivacao %}
-            <p class="mt-2"><strong>Data da Cotação:</strong> {{ produto.data_efetivacao }}</p>
-            {% endif %}
-        </div>
-        <form method="post" action="{% url 'atualizar_produto' produto.codigo %}" class="space-y-4 mt-4">
-            {% csrf_token %}
-            <div class="flex space-x-4">
-                <div class="w-1/2">
-                    <label for="codigo" class="block font-bold">Código</label>
-                    <input type="text" id="codigo" name="codigo"
-                           class="form-input bg-yellow-200 font-bold w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           value="{{ produto.codigo }}" required oninput="formatarCodigo(this)">
-                </div>
-                <div class="w-1/2">
-                    <label for="codigo_fusofix" class="block font-bold">Código Fusofix</label>
-                    <input type="text" id="codigo_fusofix" name="codigo_fusofix"
-                           class="form-input font-bold w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           value="{{ produto.codigo_fusofix }}">
-                </div>
-            </div>
 
-            {% for field in form %}
-                {% if field.name != 'codigo' %}
-                    <div class="mb-4">
-                        <label for="{{ field.id_for_label }}" class="block text-gray-700">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.errors %}
-                            <div class="text-red-500 mt-2">
-                                {{ field.errors }}
-                            </div>
+            {% if produto %}
+            <div id="produtoModal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-40">
+                <div class="bg-gradient-to-r from-blue-200 to-blue-400 p-8 rounded-lg shadow-lg" style="max-width: 600px; width: 100%;">
+                    <div class="bg-cyan-500 shadow-2xl shadow-blue-500/80 rounded-lg p-2">
+                        <h2 class="text-2xl font-bold mb-2 highlight">{{ produto.nome }}</h2>
+                        <p><strong>Código:</strong>{{ produto.codigo }}</p>
+                        <div class="flex space-x-4 mt-4">
+                            <p><strong>Valor:</strong> R$ {{ produto.valor }}</p>
+                        </div>
+                        <p class="mt-4"><strong>Última Atualização:</strong> {{ produto.data_ultima_atualizacao }}</p>
+                        {% if produto.data_efetivacao %}
+                        <p class="mt-2"><strong>Data da Cotação:</strong> {{ produto.data_efetivacao }}</p>
                         {% endif %}
                     </div>
-                {% endif %}
-            {% endfor %}
-
-            <div class="flex space-x-4 mt-4">
-                <div class="w-1/2">
-                    <label for="cento" class="block font-bold">Cento</label>
-                    <input type="text" id="cento" name="cento"
-                           class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           value="{{ produto.valor|multiply:100|floatformat:2 }}" readonly>
-                </div>
-                <div class="w-1/2">
-                    <label for="milheiro" class="block font-bold">Milheiro</label>
-                    <input type="text" id="milheiro" name="milheiro"
-                           class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           value="{{ produto.valor|multiply:1000|floatformat:2 }}" readonly>
+                    <form method="post" action="{% url 'atualizar_produto' produto.codigo %}" class="space-y-4 mt-4" onsubmit="return validarForm()">
+                        {% csrf_token %}
+                        <div class="flex space-x-4">
+                            <div class="w-1/2">
+                                <label for="codigo" class="block font-bold">Código</label>
+                                <input type="text" id="codigo" name="codigo" class="form-input bg-yellow-200 font-bold w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ produto.codigo }}" required oninput="formatarCodigo(this)">
+                            </div>
+                            <div class="w-1/2">
+                                <label for="codigo_fusofix" class="block font-bold">Código Fusofix</label>
+                                <input type="text" id="codigo_fusofix" name="codigo_fusofix" class="form-input font-bold w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ produto.codigo_fusofix }}">
+                            </div>
+                        </div>
+                        {% for field in form %}
+                            {% if field.name != 'codigo' %}
+                                <div class="mb-4">
+                                    <label for="{{ field.id_for_label }}" class="block text-gray-700">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% if field.errors %}
+                                        <div id="errorMessage" class="bg-red-200 border border-red-600 text-red-800 p-4 rounded mt-2">
+                                            {{ field.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <div class="flex space-x-4 mt-4">
+                            <div class="w-1/2">
+                                <label for="cento" class="block font-bold">Cento</label>
+                                <input type="text" id="cento" name="cento" class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ produto.valor|multiply:100|floatformat:2 }}" readonly>
+                            </div>
+                            <div class="w-1/2">
+                                <label for="milheiro" class="block font-bold">Milheiro</label>
+                                <input type="text" id="milheiro" name="milheiro" class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ produto.valor|multiply:1000|floatformat:2 }}" readonly>
+                            </div>
+                        </div>
+                        <div class="flex space-x-4 mt-2">
+                            <div class="w-1/2">
+                                <label for="cotacao_efetivada" class="block font-bold">Cotação Efetivada</label>
+                                <input type="checkbox" id="cotacao_efetivada" name="cotacao_efetivada" class="form-checkbox h-5 w-5 text-blue-600" {% if produto.cotacao_efetivada %}checked{% endif %} onclick="toggleDataEfetivacao()">
+                            </div>
+                            <div class="w-1/2">
+                                <label for="data_efetivacao" class="block font-bold">Data da Cotação</label>
+                                <input type="date" id="data_efetivacao" name="data_efetivacao" class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ produto.data_efetivacao }}" {% if not produto.cotacao_efetivada %}disabled{% endif %}>
+                            </div>
+                        </div>
+                        <div id="dataEfetivacaoError" class="bg-red-200 border border-red-600 text-red-800 p-4 rounded mt-2" style="display: none;">
+                            Data da cotação é necessária quando a cotação é efetivada.
+                        </div>
+                        
+                        <div class="flex justify-center space-x-4 mt-4">
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded custom-bounce">Atualizar</button>
+                            <button type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" onclick="fecharModal()">
+                                <i class="fas fa-times"></i> Fechar
+                            </button>
+                            <button type="submit" name="delete" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                <i class="fas fa-trash-alt"></i> Excluir
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div class="flex space-x-4 mt-4">
-                <div class="w-1/2">
-                    <label for="cotacao_efetivada" class="block font-bold">Cotação Efetivada</label>
-                    <input type="checkbox" id="cotacao_efetivada" name="cotacao_efetivada"
-                           class="form-checkbox h-5 w-5 text-blue-600" {% if produto.cotacao_efetivada %}checked{% endif %} onclick="toggleDataEfetivacao()">
-                </div>
-                <div class="w-1/2">
-                    <label for="data_efetivacao" class="block font-bold">Data da Cotação</label>
-                    <input type="date" id="data_efetivacao" name="data_efetivacao"
-                           class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           value="{{ produto.data_efetivacao }}" {% if not produto.cotacao_efetivada %}disabled{% endif %}>
-                </div>
-            </div>
-            {{ form.non_field_errors }}
-            <div class="flex justify-center space-x-4 mt-4">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-save"></i> Atualizar
-                </button>
-                <button type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" onclick="fecharModal()">
-                    <i class="fas fa-times"></i> Fechar
-                </button>
-                <button type="submit" name="delete" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-trash-alt"></i> Excluir
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-<script>
-    function abrirModal() {
-        document.getElementById('produtoModal').classList.remove('hidden');
-    }
-
-    function fecharModal() {
-        document.getElementById('produtoModal').classList.add('hidden');
-    }
-
-    function formatarCodigo(input) {
-        input.value = input.value.replace(/\./g, '').replace(/(\d{3})(\d{2})(\d{3})(\d{1})/, '$1.$2.$3-$4');
-    }
-
-    function toggleDataEfetivacao() {
-        var checkbox = document.getElementById('cotacao_efetivada');
-        var dataEfetivacaoInput = document.getElementById('data_efetivacao');
-        if (checkbox.checked) {
-            dataEfetivacaoInput.removeAttribute('disabled');
-        } else {
-            dataEfetivacaoInput.setAttribute('disabled', 'disabled');
-            dataEfetivacaoInput.value = '';
-        }
-    }
-
-    // Execute toggleDataEfetivacao on page load to set the correct initial state
-    document.addEventListener('DOMContentLoaded', function () {
-        toggleDataEfetivacao();
-    });
-</script>
-{% elif produto_nao_encontrado %}
-<div class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
-    <div class="bg-gradient-to-r from-blue-200 to-blue-400 p-8 rounded-lg shadow-lg">
-        <h2 class="text-lg font-bold mb-4 text-gray-900">Produto Não Encontrado</h2>
-        <p class="text-gray-800 mb-4">Produto com o código "{{ codigo }}" não encontrado.</p>
-        <a href="{% url 'cadastrar_produto' %}?codigo={{ codigo }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Cadastrar novo produto</a>
-        <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4" onclick="window.history.back()">Voltar à pesquisa</button>
-    </div>
-</div>
-{% endif %}
-
+            {% endif %}
         </div>
     </div>
+
     <script>
         function formatarCodigo(input) {
             let value = input.value;
@@ -225,23 +168,74 @@
             if (value.length > 10) {
                 value = value.substring(0, 10) + '-' + value.substring(10);
             }
-
             input.value = value;
         }
 
-        // Script para exibir a mensagem de sucesso e depois removê-la
+        function toggleDataEfetivacao() {
+            var checkbox = document.getElementById('cotacao_efetivada');
+            var dataEfetivacaoInput = document.getElementById('data_efetivacao');
+            var dataEfetivacaoError = document.getElementById('dataEfetivacaoError');
+            if (checkbox.checked) {
+                dataEfetivacaoInput.removeAttribute('disabled');
+            } else {
+                dataEfetivacaoInput.setAttribute('disabled', 'disabled');
+                dataEfetivacaoInput.value = '';
+                dataEfetivacaoError.style.display = 'none';
+            }
+        }
+
+        function validarForm() {
+            var checkbox = document.getElementById('cotacao_efetivada');
+            var dataEfetivacaoInput = document.getElementById('data_efetivacao');
+            var dataEfetivacaoError = document.getElementById('dataEfetivacaoError');
+
+            if (checkbox.checked && !dataEfetivacaoInput.value) {
+                dataEfetivacaoError.style.display = 'block';
+                return false;
+            }
+            dataEfetivacaoError.style.display = 'none';
+            return true;
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
-            const successMessage = document.getElementById('successMessage');
+            toggleDataEfetivacao();
+
+            // Script para fechar o modal após atualização bem-sucedida
+            var success = '{{ success }}';
+            if (success) {
+                fecharModal();
+            }
+
+            // Desvanecer mensagens de sucesso e erro
+            var successMessage = document.getElementById('successMessage');
+            var errorMessage = document.getElementById('errorMessage');
+
             if (successMessage) {
-                setTimeout(function () {
+                setTimeout(function() {
                     successMessage.classList.add('fade-out');
-                    setTimeout(function () {
-                        successMessage.style.display = 'none';
-                    }, 1000); // Espera a animação de fade-out terminar
-                },2000); // Mostra a mensagem por 2 segundos
+                }, 5000); // Tempo para iniciar o desvanecimento (5 segundos)
+                setTimeout(function() {
+                    successMessage.style.display = 'none';
+                }, 6000); // Tempo para remover o elemento (6 segundos)
+            }
+
+            if (errorMessage) {
+                setTimeout(function() {
+                    errorMessage.classList.add('fade-out');
+                }, 5000); // Tempo para iniciar o desvanecimento (5 segundos)
+                setTimeout(function() {
+                    errorMessage.style.display = 'none';
+                }, 6000); // Tempo para remover o elemento (6 segundos)
             }
         });
+
+        function abrirModal() {
+            document.getElementById('produtoModal').classList.remove('hidden');
+        }
+
+        function fecharModal() {
+            document.getElementById('produtoModal').classList.add('hidden');
+        }
     </script>
 </body>
-
 </html>
