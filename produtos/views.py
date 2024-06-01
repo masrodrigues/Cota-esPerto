@@ -41,6 +41,13 @@ def consultar_produto(request):
         'message': message
     })
 
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Produto
+from .forms import ProdutoForm
+from django.urls import reverse
+from django.contrib import messages
+from decimal import Decimal, InvalidOperation
+
 def atualizar_produto(request, codigo):
     produto = get_object_or_404(Produto, codigo=codigo)
 
@@ -49,22 +56,38 @@ def atualizar_produto(request, codigo):
         cotacao_efetivada = 'cotacao_efetivada' in request.POST
         data_efetivacao = request.POST.get('data_efetivacao', None)
 
+        # Manualmente pegue os valores dos campos do template
+        valor = request.POST.get('valor', None)
+        numero_de_pecas = request.POST.get('produto.numero_de_pecas', None)
+
+        # Converter o valor para Decimal
+        try:
+            if valor is not None:
+                valor = valor.replace(',', '.')
+                valor = Decimal(valor)
+        except InvalidOperation:
+            form.add_error('valor', 'O valor deve ser um número decimal válido.')
+
         if cotacao_efetivada and not data_efetivacao:
             form.add_error('data_efetivacao', 'Data da cotação é necessária quando a cotação é efetivada.')
         else:
             if form.is_valid():
+                # Atualize manualmente os campos removidos
+                produto.valor = valor
+                produto.numero_de_pecas = numero_de_pecas
                 if cotacao_efetivada:
                     produto.data_efetivacao = data_efetivacao
                 else:
                     produto.data_efetivacao = None
                 produto.cotacao_efetivada = cotacao_efetivada
-                form.save()
+                produto.save()
                 return redirect(f"{reverse('consultar_produto')}?codigo={codigo}&message=Produto atualizado com sucesso!&success=true")
 
     else:
         form = ProdutoForm(instance=produto)
 
     return render(request, 'produtos/consultar_produto.html', {'form': form, 'produto': produto})
+
 
 def excluir_produto(request, codigo):
     produto = get_object_or_404(Produto, codigo=codigo)
