@@ -19,11 +19,13 @@ def importar_produtos():
         reader = csv.DictReader(csvfile)
         for row in reader:
             valor = Decimal(row['valor'].replace("R$", "").replace(",", "."))
+            numero_de_pecas = int(row['numero_de_pecas'])
             produto, created = Produto.objects.get_or_create(
                 codigo=row['codigo'],
                 defaults={
                     'nome': row['nome'],
                     'descricao_longa': row['descricao_longa'],
+                    'numero_de_pecas': numero_de_pecas,
                     'valor': valor,
                     'data_ultima_atualizacao': datetime.now(),
                     'codigo_fusofix': row.get('codigo_fusofix')
@@ -32,7 +34,15 @@ def importar_produtos():
             if created:
                 print(f'Produto {produto.nome} criado com sucesso.')
             else:
-                print(f'Produto {produto.nome} já existe.')
+                # Atualiza os campos que podem ter mudado
+                produto.nome = row['nome']
+                produto.descricao_longa = row['descricao_longa']
+                produto.numero_de_pecas = numero_de_pecas
+                produto.valor = valor
+                produto.data_ultima_atualizacao = datetime.now()
+                produto.codigo_fusofix = row.get('codigo_fusofix')
+                produto.save()
+                print(f'Produto {produto.nome} atualizado com sucesso.')
 
 # Executa a função de importação
 if __name__ == '__main__':
