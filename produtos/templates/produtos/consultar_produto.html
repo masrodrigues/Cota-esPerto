@@ -141,14 +141,18 @@
                             </div>
                         </div>
                         
-                        <div class="flex space-x-4 mt-2">
-                            <div class="w-1/2">
+                        <div class="flex space-x-2 mt-2">
+                            <div class="w-1/3">
                                 <label for="cotacao_efetivada" class="block font-bold">Cotação Efetivada</label>
                                 <input type="checkbox" id="cotacao_efetivada" name="cotacao_efetivada" class="form-checkbox h-5 w-5 text-blue-600" {% if produto.cotacao_efetivada %}checked{% endif %} onclick="toggleDataEfetivacao()">
                             </div>
-                            <div class="w-1/2">
+                            <div class="w-1/3">
                                 <label for="data_efetivacao" class="block font-bold">Data da Cotação</label>
                                 <input type="date" id="data_efetivacao" name="data_efetivacao" class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ produto.data_efetivacao }}" {% if not produto.cotacao_efetivada %}disabled{% endif %}>
+                            </div>
+                            <div class="w-1/3">
+                                <label for="pecas_compradas" class="block font-bold">Peças confirmadas</label>
+                                <input type="text" id="pecas_compradas" name="pecas_compradas" class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ produto.pecas_compradas }}" {% if not produto.cotacao_efetivada %}disabled{% endif %}>
                             </div>
                         </div>
                         <div id="dataEfetivacaoError" class="bg-red-200 border border-red-600 text-red-800 p-4 rounded mt-2" style="display: none;">
@@ -213,13 +217,16 @@
         function toggleDataEfetivacao() {
             var checkbox = document.getElementById('cotacao_efetivada');
             var dataEfetivacaoInput = document.getElementById('data_efetivacao');
-            var dataEfetivacaoError = document.getElementById('dataEfetivacaoError');
+            var pecas_compradasInput = document.getElementById('pecas_compradas');
+        
             if (checkbox.checked) {
                 dataEfetivacaoInput.removeAttribute('disabled');
+                pecas_compradasInput.removeAttribute('disabled');
             } else {
                 dataEfetivacaoInput.setAttribute('disabled', 'disabled');
                 dataEfetivacaoInput.value = '';
-                dataEfetivacaoError.style.display = 'none';
+                pecas_compradasInput.setAttribute('disabled', 'disabled');
+                pecas_compradasInput.value = '';
             }
         }
     

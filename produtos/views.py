@@ -58,7 +58,8 @@ def atualizar_produto(request, codigo):
 
         # Manualmente pegue os valores dos campos do template
         valor = request.POST.get('valor', None)
-        numero_de_pecas = request.POST.get('produto.numero_de_pecas', None)
+        numero_de_pecas = request.POST.get('numero_de_pecas', None)
+        pecas_compradas = request.POST.get('pecas_compradas', None)  # Captura o campo personalizado do HTML
 
         # Converter o valor para Decimal
         try:
@@ -68,13 +69,17 @@ def atualizar_produto(request, codigo):
         except InvalidOperation:
             form.add_error('valor', 'O valor deve ser um número decimal válido.')
 
+        if not numero_de_pecas:
+            form.add_error('numero_de_pecas', 'O campo número de peças é obrigatório.')
+
         if cotacao_efetivada and not data_efetivacao:
             form.add_error('data_efetivacao', 'Data da cotação é necessária quando a cotação é efetivada.')
         else:
             if form.is_valid():
                 # Atualize manualmente os campos removidos
-                produto.valor = valor
-                produto.numero_de_pecas = numero_de_pecas
+                produto.valor = valor if valor is not None else produto.valor
+                produto.numero_de_pecas = numero_de_pecas if numero_de_pecas is not None else produto.numero_de_pecas
+                produto.pecas_compradas = pecas_compradas if pecas_compradas is not None else produto.pecas_compradas
                 if cotacao_efetivada:
                     produto.data_efetivacao = data_efetivacao
                 else:
@@ -82,11 +87,12 @@ def atualizar_produto(request, codigo):
                 produto.cotacao_efetivada = cotacao_efetivada
                 produto.save()
                 return redirect(f"{reverse('consultar_produto')}?codigo={codigo}&message=Produto atualizado com sucesso!&success=true")
-
     else:
         form = ProdutoForm(instance=produto)
 
     return render(request, 'produtos/consultar_produto.html', {'form': form, 'produto': produto})
+
+
 
 
 def excluir_produto(request, codigo):

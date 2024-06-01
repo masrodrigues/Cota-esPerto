@@ -6,6 +6,7 @@ class Produto(models.Model):
     descricao_longa = models.TextField()
     valor = models.DecimalField(max_digits=10, decimal_places=4)
     numero_de_pecas = models.IntegerField(default=0)  # Novo campo
+    pecas_compradas = models.IntegerField()
     data_ultima_atualizacao = models.DateTimeField(auto_now=True)
     cotacao_efetivada = models.BooleanField(default=False)
     data_efetivacao = models.DateField(null=True, blank=True)

@@ -142,14 +142,18 @@
         function toggleDataEfetivacao() {
             var checkbox = document.getElementById('cotacao_efetivada');
             var dataEfetivacaoInput = document.getElementById('data_efetivacao');
+            var pecas_compradasInput = document.getElementById('pecas_compradas');
             var dataEfetivacaoError = document.getElementById('dataEfetivacaoError');
             if (checkbox && dataEfetivacaoInput && dataEfetivacaoError) {
                 if (checkbox.checked) {
                     dataEfetivacaoInput.removeAttribute('disabled');
+                    pecas_compradasInput.removeAttribute('disabled');
+
                 } else {
                     dataEfetivacaoInput.setAttribute('disabled', 'disabled');
                     dataEfetivacaoInput.value = '';
                     dataEfetivacaoError.style.display = 'none';
+
                 }
             }
         }
