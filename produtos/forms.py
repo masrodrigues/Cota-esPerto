@@ -18,8 +18,8 @@ class ProdutoForm(forms.ModelForm):
             ),
             "descricao_longa": forms.Textarea(
                 attrs={
-                    "class": "form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none",
-                    "style": "height: 130px;",
+                    "class": "form-input w-full text-xs p-2 border border-gray-300 rounded-md focus:outline-none",
+                    "style": "height: 120px;",
                 }
             ),
         }
