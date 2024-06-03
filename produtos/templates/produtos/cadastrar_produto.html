@@ -73,8 +73,31 @@
                         </div>
                     {% endif %}
                 </div>
+                <div class="w-1/2">
+                    <label for="valor" class="block font-bold">Valor</label>
+                    <input type="text" id="valor" name="valor"
+           class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+           value="{{ form.valor.value|default_if_none:'' }}">
+    {% if form.valor.errors %}
+        <div class="text-red-500 mt-2">
+            {{ form.valor.errors }}
+        </div>
+    {% endif %}
+</div>
+                    <div class="w-1/2">
+                        <label for="produto.numero_de_pecas" class="block font-bold">Peças</label>
+                        <input type="number" id="numero_de_pecas" name="numero_de_pecas"
+                               class="form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               value="{{ form.numero_de_pecas.value|default_if_none:'' }}">
+                        {% if form.numero_de_pecas.errors %}
+                            <div class="text-red-500 mt-2">
+                                {{ form.numero_de_pecas.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
                 {% for field in form %}
-                    {% if field.name != 'codigo' %}
+                    {% if field.name != 'codigo' and field.name != 'valor' and field.name != 'pecas_compradas' %}
                         <div class="mb-4">
                             <label for="{{ field.id_for_label }}" class="block text-gray-700">{{ field.label }}</label>
                             {{ field }}
@@ -91,7 +114,6 @@
                     <a href="{% url 'consultar_produto' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Voltar à pesquisa</a>
                 </div>
             </form>
-            
         </div>
     </div>
     <script>

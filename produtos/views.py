@@ -10,17 +10,21 @@ def cadastrar_produto(request):
         form = ProdutoForm(request.POST)
         if form.is_valid():
             produto = form.save(commit=False)
+            if produto.valor is None:
+                # Caso o campo valor não seja fornecido no formulário, você pode tratar isso de acordo com sua lógica de negócios
+                # Neste exemplo, estou definindo um valor padrão de 0.0 para o campo valor
+                produto.valor = 0.0
             if produto.codigo_fusofix is None:
                 produto.codigo_fusofix = ''
             produto.save()
             messages.success(request, 'Produto cadastrado com sucesso!')
             return redirect(f"{reverse('consultar_produto')}?message=Produto cadastrado com sucesso!")
-
         else:
             return render(request, 'produtos/cadastrar_produto.html', {'form': form, 'error': 'Erro ao cadastrar produto. Por favor, tente novamente.'})
     else:
         form = ProdutoForm(initial={'codigo': codigo})
     return render(request, 'produtos/cadastrar_produto.html', {'form': form})
+
 
 def consultar_produto(request):
     message = request.GET.get('message', None)
