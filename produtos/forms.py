@@ -13,13 +13,13 @@ class ProdutoForm(forms.ModelForm):
         widgets = {
             "nome": forms.TextInput(
                 attrs={
-                    "class": "form-input w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+                    "class": "form-input w-full text-xs p-2 border border-gray-300 rounded-md focus:outline-none"
                 }
             ),
             "descricao_longa": forms.Textarea(
                 attrs={
                     "class": "form-input w-full text-xs p-2 border border-gray-300 rounded-md focus:outline-none",
-                    "style": "height: 120px;",
+                    "style": "height: 90px;",
                 }
             ),
         }
