@@ -8,7 +8,7 @@ class ProdutoForm(forms.ModelForm):
             "codigo",
             "nome",
             "descricao_longa",
-            # Remova "valor" e "numero_de_pecas" daqui
+            
         ]
         widgets = {
             "nome": forms.TextInput(
