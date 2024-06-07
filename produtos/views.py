@@ -3,6 +3,15 @@ from .models import Produto
 from .forms import ProdutoForm
 from django.urls import reverse
 from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Produto
+from .forms import ProdutoForm
+from django.urls import reverse
+from django.contrib import messages
+from decimal import Decimal, InvalidOperation
+
+
+from decimal import Decimal, InvalidOperation
 
 def cadastrar_produto(request):
     codigo = request.GET.get('codigo', '')
@@ -12,8 +21,15 @@ def cadastrar_produto(request):
             produto = form.save(commit=False)
             if produto.valor is None:
                 # Caso o campo valor não seja fornecido no formulário, você pode tratar isso de acordo com sua lógica de negócios
-                # Neste exemplo, estou definindo um valor padrão de 0.0 para o campo valor
                 produto.valor = 0.0
+            else:
+                try:
+                    produto.valor = Decimal(str(produto.valor).replace(',', '.'))
+                except InvalidOperation:
+                    return render(request, 'produtos/cadastrar_produto.html', {
+                        'form': form,
+                        'error': 'Erro ao cadastrar produto. Valor inválido.',
+                    })
             if produto.codigo_fusofix is None:
                 produto.codigo_fusofix = ''
             produto.save()
@@ -24,35 +40,6 @@ def cadastrar_produto(request):
     else:
         form = ProdutoForm(initial={'codigo': codigo})
     return render(request, 'produtos/cadastrar_produto.html', {'form': form})
-
-
-def consultar_produto(request):
-    message = request.GET.get('message', None)
-    produto = None
-    produto_nao_encontrado = False
-    if 'codigo' in request.GET:
-        codigo = request.GET['codigo']
-        produto = Produto.objects.filter(codigo=codigo).first()
-        if produto:
-            form = ProdutoForm(instance=produto)
-        else:
-            produto_nao_encontrado = True
-    return render(request, 'produtos/consultar_produto.html', {
-        'produto': produto,
-        'form': ProdutoForm(instance=produto) if produto else ProdutoForm(),
-        'codigo': request.GET.get('codigo', ''),
-        'produto_nao_encontrado': produto_nao_encontrado,
-        'message': message
-    })
-
-# views.py
-
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Produto
-from .forms import ProdutoForm
-from django.urls import reverse
-from django.contrib import messages
-from decimal import Decimal, InvalidOperation
 
 def atualizar_produto(request, codigo):
     produto = get_object_or_404(Produto, codigo=codigo)
@@ -76,6 +63,7 @@ def atualizar_produto(request, codigo):
             form.add_error('valor', 'O valor deve ser um número decimal válido.')
 
         if cotacao_efetivada and not data_efetivacao:
+    
             form.add_error('data_efetivacao', 'Data da cotação é necessária quando a cotação é efetivada.')
         else:
             if form.is_valid():
@@ -96,7 +84,24 @@ def atualizar_produto(request, codigo):
 
     return render(request, 'produtos/consultar_produto.html', {'form': form, 'produto': produto})
 
-
+def consultar_produto(request):
+    message = request.GET.get('message', None)
+    produto = None
+    produto_nao_encontrado = False
+    if 'codigo' in request.GET:
+        codigo = request.GET['codigo']
+        produto = Produto.objects.filter(codigo=codigo).first()
+        if produto:
+            form = ProdutoForm(instance=produto)
+        else:
+            produto_nao_encontrado = True
+    return render(request, 'produtos/consultar_produto.html', {
+        'produto': produto,
+        'form': ProdutoForm(instance=produto) if produto else ProdutoForm(),
+        'codigo': request.GET.get('codigo', ''),
+        'produto_nao_encontrado': produto_nao_encontrado,
+        'message': message
+    })
 
 
 

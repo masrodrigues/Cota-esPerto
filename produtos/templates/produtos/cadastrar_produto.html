@@ -134,7 +134,58 @@
 
             input.value = value;
         }
-
+        document.addEventListener('DOMContentLoaded', function () {
+            const valorInput = document.getElementById('valor');
+            if (valorInput) {
+                valorInput.addEventListener('input', function () {
+                    formatarValor(valorInput);
+                });
+            }
+        
+            // Ocultar mensagem de sucesso após 5 segundos
+            const successMessage = document.getElementById('success-message');
+            if (successMessage) {
+                setTimeout(function () {
+                    successMessage.style.display = 'none';
+                }, 5000);
+            }
+        });
+        
+        function formatarValor(input) {
+            let value = input.value.replace(',', '.'); // Substitui vírgulas por pontos
+            input.value = value;
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            toggleDataEfetivacao();
+    
+            // Script para fechar o modal após atualização bem-sucedida
+            var success = '{{ request.GET.success|default_if_none:"false" }}';
+            if (success === 'true') {
+                fecharModal();
+            }
+    
+            // Desvanecer mensagens de sucesso e erro
+            var successMessage = document.getElementById('successMessage');
+            var errorMessage = document.getElementById('errorMessage');
+    
+            if (successMessage) {
+                setTimeout(function() {
+                    successMessage.classList.add('fade-out');
+                }, 5000); // Tempo para iniciar o desvanecimento (5 segundos)
+                setTimeout(function() {
+                    successMessage.style.display = 'none';
+                }, 6000); // Tempo para remover o elemento (6 segundos)
+            }
+    
+            if (errorMessage) {
+                setTimeout(function() {
+                    errorMessage.classList.add('fade-out');
+                }, 4000); // Tempo para iniciar o desvanecimento (3 segundos)
+                setTimeout(function() {
+                    errorMessage.style.display = 'none';
+                }, 6000); // Tempo para remover o elemento (4 segundos)
+            }
+        });
         // Atribui a função de formatação ao campo de entrada no carregamento da página
         document.addEventListener('DOMContentLoaded', function () {
             const codigoInput = document.getElementById('codigo');
